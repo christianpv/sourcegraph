@@ -23,11 +23,10 @@ func (s *store) GetPackage(ctx context.Context, scheme, name, version string) (D
 			d.process_after,
 			d.num_resets,
 			d.repository_id,
-			regexp_replace(r.name, '^DELETED-\d+\.\d+-', '') as repository_name,
+			d.repository_name,
 			d.indexer
 		FROM lsif_packages p
-		JOIN lsif_dumps d ON d.id = p.dump_id
-		JOIN repo r ON r.id = d.repository_id
+		JOIN lsif_dumps_with_repository_name d ON d.id = p.dump_id
 		WHERE p.scheme = %s AND p.name = %s AND p.version = %s
 		ORDER BY d.uploaded_at DESC
 		LIMIT 1

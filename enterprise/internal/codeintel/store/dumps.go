@@ -8,8 +8,8 @@ import (
 	"github.com/keegancsmith/sqlf"
 )
 
-// Dump is a subset of the lsif_uploads table (queried via the lsif_dumps view) and stores
-// only processed records.
+// Dump is a subset of the lsif_uploads table (queried via the lsif_dumps_with_repository_name view)
+// and stores only processed records.
 type Dump struct {
 	ID             int        `json:"id"`
 	Commit         string     `json:"commit"`
@@ -73,7 +73,7 @@ func scanFirstDump(rows *sql.Rows, err error) (Dump, bool, error) {
 
 // GetDumpIDs returns all dump ids in chronological order.
 func (s *store) GetDumpIDs(ctx context.Context) ([]int, error) {
-	return scanInts(s.query(ctx, sqlf.Sprintf(`SELECT d.id FROM lsif_dumps d ORDER BY uploaded_at`)))
+	return scanInts(s.query(ctx, sqlf.Sprintf(`SELECT d.id FROM lsif_dumps_with_repository_name d ORDER BY uploaded_at`)))
 }
 
 // GetDumpByID returns a dump by its identifier and boolean flag indicating its existence.
@@ -92,10 +92,9 @@ func (s *store) GetDumpByID(ctx context.Context, id int) (Dump, bool, error) {
 			d.process_after,
 			d.num_resets,
 			d.repository_id,
-			regexp_replace(r.name, '^DELETED-\d+\.\d+-', '') as repository_name,
+			d.repository_name,
 			d.indexer
-		FROM lsif_dumps d
-		JOIN repo r ON r.id = d.repository_id
+		FROM lsif_dumps_with_repository_name d
 		WHERE d.id = %s
 	`, id)))
 }
@@ -144,10 +143,9 @@ func (s *store) FindClosestDumps(ctx context.Context, repositoryID int, commit, 
 				d.process_after,
 				d.num_resets,
 				d.repository_id,
-				regexp_replace(r.name, '^DELETED-\d+\.\d+-', '') as repository_name,
+				d.repository_name,
 				d.indexer
-			FROM lsif_dumps d
-			JOIN repo r ON r.id = d.repository_id
+			FROM lsif_dumps_with_repository_name d
 			WHERE %s
 		`, sqlf.Join(conds, " AND ")),
 	))
@@ -180,7 +178,7 @@ func (s *store) DeleteOldestDump(ctx context.Context) (int, bool, error) {
 	return scanFirstInt(s.query(ctx, sqlf.Sprintf(`
 		DELETE FROM lsif_uploads
 		WHERE id IN (
-			SELECT id FROM lsif_dumps
+			SELECT id FROM lsif_dumps_with_repository_name
 			WHERE visible_at_tip = false
 			ORDER BY uploaded_at
 			LIMIT 1
@@ -191,7 +189,7 @@ func (s *store) DeleteOldestDump(ctx context.Context) (int, bool, error) {
 // UpdateDumpsVisibleFromTip recalculates the visible_at_tip flag of all dumps of the given repository.
 func (s *store) UpdateDumpsVisibleFromTip(ctx context.Context, repositoryID int, tipCommit string) (err error) {
 	return s.queryForEffect(ctx, withAncestorLineage(`
-		UPDATE lsif_dumps d
+		UPDATE lsif_uploads d
 		SET visible_at_tip = id IN (SELECT * from visible_ids)
 		WHERE d.repository_id = %s AND (d.id IN (SELECT * from visible_ids) OR d.visible_at_tip)
 	`, repositoryID, tipCommit, repositoryID))

@@ -25,7 +25,7 @@ var visibleIDsCTE = `
 	-- Correlate commits to dumps and filter out commits without LSIF data
 	lineage_with_dumps AS (
 		SELECT a.*, d.root, d.indexer, d.id as dump_id FROM limited_lineage a
-		JOIN lsif_dumps d ON d.repository_id = a.repository_id AND d."commit" = a."commit"
+		JOIN lsif_dumps_with_repository_name d ON d.repository_id = a.repository_id AND d."commit" = a."commit"
 	),
 	visible_ids AS (
 		-- Remove dumps where there exists another visible dump of smaller depth with an
