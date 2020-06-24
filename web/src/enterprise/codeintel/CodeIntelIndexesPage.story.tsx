@@ -31,7 +31,7 @@ const commonProps = {
     now: () => new Date('2020-06-15T15:25:00+00:00'),
 }
 
-const index: Pick<Index, 'id' | 'projectRoot' | 'inputRepositoryName' | 'inputCommit'> = {
+const index: Pick<Index, 'id' | 'projectRoot' | 'inputCommit'> = {
     id: '1234',
     projectRoot: {
         url: '',
@@ -46,7 +46,6 @@ const index: Pick<Index, 'id' | 'projectRoot' | 'inputRepositoryName' | 'inputCo
             abbreviatedOID: '9ea5e9f',
         },
     },
-    inputRepositoryName: 'github.com/sourcegraph/sourcegraph',
     inputCommit: '9ea5e9f0e0344f8197622df6b36faf48ccd02570',
 }
 

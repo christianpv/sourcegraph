@@ -4149,10 +4149,6 @@ type LSIFUpload implements Node {
     # The project for which this upload provides code intelligence.
     projectRoot: GitTree
 
-    # The name of the repository. This field is populated even if the project root cannot be resolved
-    # (deu to a repository deletion or a force push that destroys the input commit on the code host).
-    inputRepositoryName: String!
-
     # The original 40-character commit commit supplied at upload time.
     inputCommit: String!
 
@@ -4221,10 +4217,6 @@ type LSIFIndex implements Node {
 
     # The project for which this upload provides code intelligence.
     projectRoot: GitTree
-
-    # The name of the repository. This field is populated even if the project root cannot be resolved
-    # (deu to a repository deletion or a force push that destroys the input commit on the code host).
-    inputRepositoryName: String!
 
     # The original 40-character commit commit supplied at index time.
     inputCommit: String!

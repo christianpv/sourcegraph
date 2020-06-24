@@ -75,7 +75,6 @@ export function fetchLsifUploads({
                                     abbreviatedOID
                                 }
                             }
-                            inputRepositoryName
                             inputCommit
                             inputRoot
                             inputIndexer
@@ -136,7 +135,6 @@ export function fetchLsifUploads({
                                         abbreviatedOID
                                     }
                                 }
-                                inputRepositoryName
                                 inputCommit
                                 inputRoot
                                 inputIndexer
@@ -193,7 +191,6 @@ export function fetchLsifUpload({ id }: { id: string }): Observable<Upload | nul
                                 abbreviatedOID
                             }
                         }
-                        inputRepositoryName
                         inputCommit
                         inputRoot
                         inputIndexer
@@ -298,7 +295,6 @@ export function fetchLsifIndexes({
                                     abbreviatedOID
                                 }
                             }
-                            inputRepositoryName
                             inputCommit
                             queuedAt
                             startedAt
@@ -344,7 +340,6 @@ export function fetchLsifIndexes({
                                         abbreviatedOID
                                     }
                                 }
-                                inputRepositoryName
                                 inputCommit
                                 queuedAt
                                 startedAt
@@ -399,7 +394,6 @@ export function fetchLsifIndex({ id }: { id: string }): Observable<Index | null>
                                 abbreviatedOID
                             }
                         }
-                        inputRepositoryName
                         inputCommit
                         state
                         failure
