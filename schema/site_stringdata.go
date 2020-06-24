@@ -97,7 +97,7 @@ const SiteSchemaJSON = `{
           "default": "disabled"
         },
         "searchMultipleRevisionsPerRepository": {
-          "description": "Enables searching multiple revisions of the same repository (using ` + "`" + `repo:myrepo@branch1:branch2` + "`" + `).",
+          "description": "DEPRECATED. Always on. Will be removed in 3.19.",
           "type": "boolean",
           "default": false,
           "!go": { "pointer": true }
@@ -635,7 +635,8 @@ const SiteSchemaJSON = `{
             "oneOf": [
               { "$ref": "#/definitions/GrafanaNotifierSlack" },
               { "$ref": "#/definitions/GrafanaNotifierPagerduty" },
-              { "$ref": "#/definitions/GrafanaNotifierWebhook" }
+              { "$ref": "#/definitions/GrafanaNotifierWebhook" },
+              { "$ref": "#/definitions/GrafanaNotifierOpsGenie" }
             ],
             "!go": {
               "taggedUnionType": true
@@ -1076,6 +1077,20 @@ const SiteSchemaJSON = `{
         "url": { "type": "string" },
         "username": { "type": "string" },
         "password": { "type": "string" }
+      }
+    },
+    "GrafanaNotifierOpsGenie": {
+      "description": "OpsGenie notifier - see https://docs.opsgenie.com/docs/grafana-integration",
+      "type": "object",
+      "required": ["type", "apiKey", "apiUrl"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "opsgenie"
+        },
+        "apiKey": { "type": "string" },
+        "apiUrl": { "type": "string" },
+        "autoClose": { "type": "boolean" }
       }
     }
   }
